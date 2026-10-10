@@ -1,0 +1,6 @@
+package com.onlinelibrary.dao.impl;
+import com.onlinelibrary.dao.SearchHistoryDAO; import com.onlinelibrary.util.DBConnection; import java.sql.*; import java.util.*;
+public class SearchHistoryDAOImpl implements SearchHistoryDAO {
+ public void save(long id,String text,String title,String author,String genre)throws SQLException{try(Connection c=DBConnection.getConnection();PreparedStatement p=c.prepareStatement("INSERT INTO search_history(member_id,search_text,title_filter,author_filter,genre_filter) VALUES(?,?,?,?,?)")){p.setLong(1,id);p.setString(2,text);p.setString(3,title);p.setString(4,author);p.setString(5,genre);p.executeUpdate();}}
+ public List<Map<String,Object>> findForMember(long id)throws SQLException{try(Connection c=DBConnection.getConnection();PreparedStatement p=c.prepareStatement("SELECT search_text,title_filter,author_filter,genre_filter,searched_at FROM search_history WHERE member_id=? ORDER BY searched_at DESC LIMIT 100")){p.setLong(1,id);try(ResultSet r=p.executeQuery()){List<Map<String,Object>>out=new ArrayList<>();while(r.next()){Map<String,Object>m=new LinkedHashMap<>();m.put("searchText",r.getString(1));m.put("title",r.getString(2));m.put("author",r.getString(3));m.put("genre",r.getString(4));m.put("searchedAt",r.getTimestamp(5).toLocalDateTime());out.add(m);}return out;}}}
+}

@@ -1,0 +1,3 @@
+package com.onlinelibrary.controller;
+import com.onlinelibrary.dao.impl.ReportDAOImpl; import jakarta.servlet.annotation.WebServlet; import jakarta.servlet.http.*; import jakarta.servlet.*; import java.io.IOException;
+@WebServlet("/librarian/reports") public class ReportServlet extends HttpServlet {protected void doGet(HttpServletRequest r,HttpServletResponse s)throws IOException,ServletException{try{ReportDAOImpl d=new ReportDAOImpl();r.setAttribute("summary",d.summary());r.setAttribute("mostBorrowed",d.mostBorrowed());r.setAttribute("genres",d.genreDistribution());r.setAttribute("borrowing",d.monthlyBorrowing());r.setAttribute("returns",d.monthlyReturns());WebSupport.view(r,s,"reports.jsp");}catch(Exception e){WebSupport.fail(r,s,e);}}}

@@ -1,0 +1,6 @@
+package com.onlinelibrary.dao.impl;
+import com.onlinelibrary.dao.NotificationPreferenceDAO; import com.onlinelibrary.util.DBConnection; import java.sql.*; import java.util.*;
+public class NotificationPreferenceDAOImpl implements NotificationPreferenceDAO {
+ public Map<String,Boolean> find(long id)throws SQLException{try(Connection c=DBConnection.getConnection();PreparedStatement p=c.prepareStatement("SELECT due_date_enabled,overdue_enabled,new_arrival_enabled FROM notification_preferences WHERE member_id=?")){p.setLong(1,id);try(ResultSet r=p.executeQuery()){Map<String,Boolean>m=new HashMap<>();if(r.next()){m.put("dueDate",r.getBoolean(1));m.put("overdue",r.getBoolean(2));m.put("newArrivals",r.getBoolean(3));}return m;}}}
+ public void save(long id,boolean due,boolean overdue,boolean arrivals)throws SQLException{try(Connection c=DBConnection.getConnection();PreparedStatement p=c.prepareStatement("INSERT INTO notification_preferences(member_id,due_date_enabled,overdue_enabled,new_arrival_enabled) VALUES(?,?,?,?) ON DUPLICATE KEY UPDATE due_date_enabled=VALUES(due_date_enabled),overdue_enabled=VALUES(overdue_enabled),new_arrival_enabled=VALUES(new_arrival_enabled)")){p.setLong(1,id);p.setBoolean(2,due);p.setBoolean(3,overdue);p.setBoolean(4,arrivals);p.executeUpdate();}}
+}

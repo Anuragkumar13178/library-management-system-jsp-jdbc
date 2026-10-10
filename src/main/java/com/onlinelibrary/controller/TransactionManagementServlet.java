@@ -1,0 +1,3 @@
+package com.onlinelibrary.controller;
+import com.onlinelibrary.dao.impl.TransactionDAOImpl; import jakarta.servlet.annotation.WebServlet; import jakarta.servlet.http.*; import jakarta.servlet.*; import java.io.IOException;
+@WebServlet("/librarian/transactions") public class TransactionManagementServlet extends HttpServlet {protected void doGet(HttpServletRequest r,HttpServletResponse s)throws IOException,ServletException{try{String status=r.getParameter("status");r.setAttribute("transactions",new TransactionDAOImpl().findAll(status==null||status.isBlank()?null:status));WebSupport.view(r,s,"transactions.jsp");}catch(Exception e){WebSupport.fail(r,s,e);}}}

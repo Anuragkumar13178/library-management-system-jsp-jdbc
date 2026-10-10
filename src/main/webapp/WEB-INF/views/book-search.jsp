@@ -1,0 +1,1 @@
+<%@ include file="_header.jspf" %><h1>Search results</h1><section class="panel"><p class="muted">Searches are saved to your personal search history.</p><%@ include file="_book-table.jspf" %></section><%@ include file="_footer.jspf" %>

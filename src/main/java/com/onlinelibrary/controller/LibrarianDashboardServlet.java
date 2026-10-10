@@ -1,0 +1,3 @@
+package com.onlinelibrary.controller;
+import com.onlinelibrary.dao.impl.*; import jakarta.servlet.annotation.WebServlet; import jakarta.servlet.http.*; import jakarta.servlet.*; import java.io.IOException;
+@WebServlet("/librarian/dashboard") public class LibrarianDashboardServlet extends HttpServlet {protected void doGet(HttpServletRequest r,HttpServletResponse s)throws IOException,ServletException{try{r.setAttribute("books",new BookDAOImpl().findAll());r.setAttribute("members",new UserDAOImpl().findMembers(""));r.setAttribute("transactions",new TransactionDAOImpl().findAll(null));r.setAttribute("summary",new ReportDAOImpl().summary());WebSupport.view(r,s,"librarian-dashboard.jsp");}catch(Exception e){WebSupport.fail(r,s,e);}}}

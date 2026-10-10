@@ -1,0 +1,1 @@
+<%@ include file="_header.jspf" %><section class="panel narrow"><p class="eyebrow">REQUEST COULD NOT BE COMPLETED</p><h1>Something needs attention</h1><p><c:out value="${error}"/></p><a class="button" href="javascript:history.back()">Go back</a></section><%@ include file="_footer.jspf" %>

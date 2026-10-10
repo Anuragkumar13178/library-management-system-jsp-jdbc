@@ -1,0 +1,3 @@
+db.url=jdbc:mysql://localhost:3306/online_library?useSSL=false&serverTimezone=UTC
+db.username=library_app
+db.password=choose-a-local-password

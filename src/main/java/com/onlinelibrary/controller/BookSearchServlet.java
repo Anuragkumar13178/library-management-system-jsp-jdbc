@@ -1,0 +1,3 @@
+package com.onlinelibrary.controller;
+import jakarta.servlet.annotation.WebServlet; import jakarta.servlet.http.*; import jakarta.servlet.*; import java.io.IOException;
+@WebServlet("/member/search") public class BookSearchServlet extends HttpServlet {protected void doGet(HttpServletRequest r,HttpServletResponse s)throws IOException,ServletException{try{String title=n(r.getParameter("title")),author=n(r.getParameter("author")),genre=n(r.getParameter("genre"));r.setAttribute("books",WebSupport.SERVICE.searchBooks(WebSupport.uid(r),String.join(" ",title,author,genre).trim(),title,author,genre));WebSupport.view(r,s,"book-search.jsp");}catch(Exception e){WebSupport.fail(r,s,e);}}private String n(String x){return x==null?"":x.trim();}}

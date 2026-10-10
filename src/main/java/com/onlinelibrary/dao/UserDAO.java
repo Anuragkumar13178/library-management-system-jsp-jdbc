@@ -1,0 +1,3 @@
+package com.onlinelibrary.dao;
+import com.onlinelibrary.model.User; import java.sql.SQLException; import java.util.List; import java.util.Optional;
+public interface UserDAO { Optional<User> findByEmail(String email) throws SQLException; Optional<User> findById(long id) throws SQLException; List<User> findMembers(String term) throws SQLException; User createMember(User user) throws SQLException; void updateMember(User user) throws SQLException; void deactivate(long id) throws SQLException; void updateProfile(User user,boolean changePassword) throws SQLException; long countActiveMembers() throws SQLException; }

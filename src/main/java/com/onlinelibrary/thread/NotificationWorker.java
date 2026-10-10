@@ -1,0 +1,11 @@
+package com.onlinelibrary.thread;
+import com.onlinelibrary.util.DBConnection; import java.sql.*; import java.util.concurrent.*;
+/** Periodically enqueues due-soon and overdue notices; uniqueness is enforced per event/member/transaction. */
+public final class NotificationWorker implements AutoCloseable {
+ private final ScheduledExecutorService executor=Executors.newSingleThreadScheduledExecutor(r->{Thread t=new Thread(r,"library-notification-worker");t.setDaemon(true);return t;});
+ public void start(){executor.scheduleWithFixedDelay(this::runSafely,20,60,TimeUnit.SECONDS);} private void runSafely(){try{scan();}catch(SQLException e){System.err.println("Notification scan failed: "+e.getMessage());}}
+ private void scan()throws SQLException{String due="INSERT INTO notifications(member_id,title,message,type) SELECT t.member_id,'Due date reminder',CONCAT('Return ',b.title,' by ',DATE_FORMAT(t.due_date,'%Y-%m-%d')),'DUE_DATE' FROM transactions t JOIN books b ON b.id=t.book_id JOIN notification_preferences p ON p.member_id=t.member_id AND p.due_date_enabled=TRUE WHERE t.status='BORROWED' AND t.due_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(),INTERVAL 2 DAY) AND NOT EXISTS(SELECT 1 FROM notifications n WHERE n.member_id=t.member_id AND n.type='DUE_DATE' AND n.message LIKE CONCAT('%',b.title,'%') AND DATE(n.created_at)=CURDATE())";
+  String overdue="INSERT INTO notifications(member_id,title,message,type) SELECT t.member_id,'Overdue book',CONCAT('Please return ',b.title,'. Due date: ',DATE_FORMAT(t.due_date,'%Y-%m-%d')),'OVERDUE' FROM transactions t JOIN books b ON b.id=t.book_id JOIN notification_preferences p ON p.member_id=t.member_id AND p.overdue_enabled=TRUE WHERE t.status IN ('BORROWED','OVERDUE') AND t.due_date<CURDATE() AND NOT EXISTS(SELECT 1 FROM notifications n WHERE n.member_id=t.member_id AND n.type='OVERDUE' AND n.message LIKE CONCAT('%',b.title,'%') AND DATE(n.created_at)=CURDATE())";
+  try(Connection c=DBConnection.getConnection();Statement s=c.createStatement()){s.executeUpdate("UPDATE transactions SET status='OVERDUE' WHERE status='BORROWED' AND due_date<CURDATE()");s.executeUpdate(due);s.executeUpdate(overdue);}}
+ @Override public void close(){executor.shutdownNow();}
+}

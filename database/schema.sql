@@ -1,0 +1,40 @@
+CREATE DATABASE IF NOT EXISTS online_library CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+USE online_library;
+CREATE TABLE users (
+ id BIGINT PRIMARY KEY AUTO_INCREMENT, membership_id VARCHAR(30) NOT NULL UNIQUE, name VARCHAR(120) NOT NULL,
+ email VARCHAR(190) NOT NULL UNIQUE, password_hash VARCHAR(255) NOT NULL,
+ role ENUM('LIBRARIAN','MEMBER') NOT NULL, status ENUM('ACTIVE','INACTIVE') NOT NULL DEFAULT 'ACTIVE',
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+CREATE TABLE books (
+ id BIGINT PRIMARY KEY AUTO_INCREMENT, title VARCHAR(200) NOT NULL, author VARCHAR(160) NOT NULL,
+ isbn VARCHAR(20) NOT NULL UNIQUE, genre VARCHAR(80) NOT NULL, publisher VARCHAR(160), publication_year SMALLINT,
+ total_quantity INT NOT NULL, available_quantity INT NOT NULL,
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+ CONSTRAINT chk_book_inventory CHECK(total_quantity >= 0 AND available_quantity >= 0 AND available_quantity <= total_quantity)
+);
+CREATE TABLE transactions (
+ id BIGINT PRIMARY KEY AUTO_INCREMENT, book_id BIGINT NOT NULL, member_id BIGINT NOT NULL,
+ borrow_date DATE NOT NULL, due_date DATE NOT NULL, return_date DATE,
+ status ENUM('BORROWED','RETURNED','OVERDUE') NOT NULL DEFAULT 'BORROWED',
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ CONSTRAINT fk_tx_book FOREIGN KEY(book_id) REFERENCES books(id), CONSTRAINT fk_tx_member FOREIGN KEY(member_id) REFERENCES users(id),
+ INDEX idx_tx_member_status(member_id,status), INDEX idx_tx_due_status(due_date,status)
+);
+CREATE TABLE notifications (
+ id BIGINT PRIMARY KEY AUTO_INCREMENT, member_id BIGINT NOT NULL, title VARCHAR(180) NOT NULL, message TEXT NOT NULL,
+ type ENUM('DUE_DATE','OVERDUE','NEW_ARRIVAL','ANNOUNCEMENT') NOT NULL, is_read BOOLEAN NOT NULL DEFAULT FALSE,
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, CONSTRAINT fk_notice_member FOREIGN KEY(member_id) REFERENCES users(id) ON DELETE CASCADE,
+ INDEX idx_notice_member_read(member_id,is_read)
+);
+CREATE TABLE notification_preferences (
+ id BIGINT PRIMARY KEY AUTO_INCREMENT, member_id BIGINT NOT NULL UNIQUE,
+ due_date_enabled BOOLEAN NOT NULL DEFAULT TRUE, overdue_enabled BOOLEAN NOT NULL DEFAULT TRUE,
+ new_arrival_enabled BOOLEAN NOT NULL DEFAULT TRUE,
+ CONSTRAINT fk_pref_member FOREIGN KEY(member_id) REFERENCES users(id) ON DELETE CASCADE
+);
+CREATE TABLE search_history (
+ id BIGINT PRIMARY KEY AUTO_INCREMENT, member_id BIGINT NOT NULL, search_text VARCHAR(200),
+ title_filter VARCHAR(200), author_filter VARCHAR(160), genre_filter VARCHAR(80), searched_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ CONSTRAINT fk_search_member FOREIGN KEY(member_id) REFERENCES users(id) ON DELETE CASCADE, INDEX idx_search_member_date(member_id,searched_at)
+);

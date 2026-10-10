@@ -1,0 +1,3 @@
+package com.onlinelibrary.controller;
+import com.onlinelibrary.service.impl.LibraryServiceImpl; import jakarta.servlet.*; import jakarta.servlet.http.*; import java.io.IOException;
+final class WebSupport { static final LibraryServiceImpl SERVICE=new LibraryServiceImpl(); private WebSupport(){} static long uid(HttpServletRequest r){return (Long)r.getSession().getAttribute("userId");} static void view(HttpServletRequest r,HttpServletResponse s,String page)throws ServletException,IOException{r.getRequestDispatcher("/WEB-INF/views/"+page).forward(r,s);} static void fail(HttpServletRequest r,HttpServletResponse s,Exception e)throws ServletException,IOException{r.setAttribute("error",e.getMessage());view(r,s,"error.jsp");} }
