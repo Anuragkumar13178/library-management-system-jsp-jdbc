@@ -92,7 +92,15 @@ These are classroom fixtures, not production credentials. Passwords are stored a
 
 ## Screenshots
 
-No screenshots are included yet. Capture the deployed login, member dashboard, librarian dashboard, and reports pages during the Review 1 rehearsal.
+The following application screenshots are taken from the project presentation:
+
+| Member dashboard | Librarian dashboard |
+|---|---|
+| ![Member dashboard](docs/screenshots/member-dashboard.png) | ![Librarian dashboard](docs/screenshots/librarian-dashboard.png) |
+
+| Inventory reports | Notifications |
+|---|---|
+| ![Inventory reports](docs/screenshots/inventory-reports.png) | ![Notifications](docs/screenshots/notifications.png) |
 
 ## Limitations and future scope
 
