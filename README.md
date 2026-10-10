@@ -113,6 +113,6 @@ The following application screenshots are taken from the project presentation:
 
 ## Review materials
 
-See [REVIEW_1_RUBRIC_MAPPING.md](REVIEW_1_RUBRIC_MAPPING.md), [VIVA_QUESTIONS.md](VIVA_QUESTIONS.md), [DEMO_SCRIPT.md](DEMO_SCRIPT.md), and [FINAL_REVIEW_AUDIT.md](FINAL_REVIEW_AUDIT.md).
+See [REVIEW_1_RUBRIC_MAPPING.md](REVIEW_1_RUBRIC_MAPPING.md), [DEMO_SCRIPT.md](DEMO_SCRIPT.md), and [FINAL_REVIEW_AUDIT.md](FINAL_REVIEW_AUDIT.md).
 
 Project presentation: [Online Library Project Presentation](docs/Online_Library_Project_Presentation.pptx).
